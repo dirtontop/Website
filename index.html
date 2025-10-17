@@ -1,71 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Dirt's Rbx Scripts</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.7.0/dist/supabase.min.js"></script>
 </head>
 <body>
-  <header>
-    <div class="logo">Dirt's <span>Rbx Scripts</span></div>
-    <nav>
-      <button class="tab-btn active" data-tab="home">Home</button>
-      <button class="tab-btn" data-tab="signup">Sign Up</button>
-      <button class="tab-btn" data-tab="login">Log In</button>
-      <button class="tab-btn" data-tab="dashboard" style="display:none;">Dashboard</button>
-    </nav>
-  </header>
-
-  <main>
-    <!-- Home -->
-    <section id="home" class="tab-content active">
-      <h1>Welcome to Dirt's Rbx Scripts</h1>
-      <p>Manage keys securely and explore powerful tools.</p>
-    </section>
-
-    <!-- Sign Up -->
-    <section id="signup" class="tab-content">
-      <h2>Create Account</h2>
-      <input type="text" id="signupUsername" placeholder="Username">
-      <input type="password" id="signupPassword" placeholder="Password">
-      <button id="signupBtn" class="btn">Sign Up</button>
-      <p id="signupMsg" class="msg"></p>
-    </section>
-
-    <!-- Log In -->
-    <section id="login" class="tab-content">
-      <h2>Log In</h2>
-      <input type="text" id="loginUsername" placeholder="Username">
-      <input type="password" id="loginPassword" placeholder="Password">
-      <button id="loginBtn" class="btn">Log In</button>
-      <p id="loginMsg" class="msg"></p>
-    </section>
-
-    <!-- Dashboard -->
-    <section id="dashboard" class="tab-content">
-      <h2>Dashboard</h2>
-      <div id="userDashboard" class="dashboard-content">
-        <button id="generateKey" class="btn">Generate 16-Digit Key</button>
-        <ul id="keyList"></ul>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">DR</div>
+        <div>
+          <div class="sitename">Dirt's <span>Rbx</span> Scripts</div>
+          <div class="subtitle">Neat • Clean • Professional</div>
+        </div>
       </div>
-      <div id="adminDashboard" class="dashboard-content" style="display:none;">
-        <h3>Admin Panel: All Users</h3>
-        <table id="allUsersTable">
-          <thead>
-            <tr><th>ID</th><th>Username</th><th>Password</th><th>Keys</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <button id="logoutBtn" class="btn danger">Log Out</button>
-    </section>
-  </main>
 
-  <footer>
-    <p>© 2025 Dirt's Rbx Scripts</p>
-  </footer>
+      <nav class="nav" id="mainNav">
+        <button class="tab-btn active" data-tab="home">Home</button>
+        <button class="tab-btn" data-tab="signup">Sign Up</button>
+        <button class="tab-btn" data-tab="login">Log In</button>
+        <button class="tab-btn" data-tab="dashboard" style="display:none">Dashboard</button>
+      </nav>
+    </header>
+
+    <main class="main">
+      <!-- HOME -->
+      <section id="home" class="tabpanel active">
+        <h1>Welcome to <span>Dirt's Rbx Scripts</span></h1>
+        <p class="lead">Quick tools, key generation, and account management.</p>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Zexon Hub</h3>
+            <p>Copy the Zexon Hub script/value to clipboard.</p>
+            <div class="row">
+              <button id="copyZexon" class="btn primary">Copy Zexon Hub</button>
+              <button id="copyZexonAlt" class="btn ghost">Preview</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Dirt Hub</h3>
+            <p>Copy the Dirt Hub script/value to clipboard.</p>
+            <div class="row">
+              <button id="copyDirt" class="btn primary">Copy Dirt Hub</button>
+              <button id="copyDirtAlt" class="btn ghost">Preview</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Community</h3>
+            <p>Join the Discord server for support & announcements.</p>
+            <div class="row">
+              <button id="discordBtn" class="btn discord">Join Discord</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SIGNUP -->
+      <section id="signup" class="tabpanel">
+        <h2>Create an account</h2>
+        <div class="glass">
+          <input id="suUsername" placeholder="Username" />
+          <input id="suPassword" type="password" placeholder="Password" />
+          <div class="row">
+            <button id="btnSignup" class="btn primary">Sign Up</button>
+            <button id="btnSignupDemo" class="btn ghost">Fill Demo</button>
+          </div>
+          <div id="signupMsg" class="msg"></div>
+        </div>
+      </section>
+
+      <!-- LOGIN -->
+      <section id="login" class="tabpanel">
+        <h2>Log in</h2>
+        <div class="glass">
+          <input id="liUsername" placeholder="Username" />
+          <input id="liPassword" type="password" placeholder="Password" />
+          <div class="row">
+            <button id="btnLogin" class="btn primary">Log In</button>
+            <button id="btnLoginDemo" class="btn ghost">Use Admin</button>
+          </div>
+          <div id="loginMsg" class="msg"></div>
+        </div>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="tabpanel">
+        <h2>Dashboard</h2>
+
+        <div class="dash-controls">
+          <div id="userPanel" class="dash-panel">
+            <div class="glass small">
+              <div class="row">
+                <button id="genKeyBtn" class="btn primary">Generate Key (XXXX-XXXX-XXXX-XXXX)</button>
+                <button id="copyAllKeys" class="btn ghost">Copy All Keys</button>
+              </div>
+              <h4>Your Keys</h4>
+              <ul id="userKeys" class="key-list"></ul>
+            </div>
+          </div>
+
+          <div id="adminPanel" class="dash-panel" style="display:none;">
+            <div class="glass">
+              <h3>Admin — Manage Users</h3>
+              <table id="adminTable" class="admin-table">
+                <thead><tr><th>ID</th><th>Username</th><th>Password</th><th>#Keys</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+              <div id="adminMsg" class="msg"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="btnLogout" class="btn danger">Log Out</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> Dirt's Rbx Scripts — Built with ❤️</div>
+    </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
