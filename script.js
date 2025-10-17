@@ -1,120 +1,95 @@
-const tabs = document.querySelectorAll('.tab-button');
+// Supabase setup
+const SUPABASE_URL = 'https://efitddfhnqfuahovkqap.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaXRkZGZobnFmdWFob3ZrcWFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2ODg2MTYsImV4cCI6MjA3NjI2NDYxNn0.W4DBhr_TYEdEYvnjNS0V2zNYms0qb2oZOsV3eZdTEbI';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Tabs
+const tabs = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
-const dashTabs = document.querySelectorAll('.dash-tab');
-const dashContents = document.querySelectorAll('.dash-content');
-const loginBtn = document.getElementById('loginBtn');
-const loginMsg = document.getElementById('loginMsg');
-const dashboard = document.getElementById('dashboard');
-const navbar = document.getElementById('navbar');
-const keyList = document.getElementById('keyList');
-const generateKeyBtn = document.getElementById('generateKey');
-const logoutBtn = document.getElementById('logoutBtn');
-const accountMsg = document.getElementById('accountMsg');
+const dashboardTabBtn = document.querySelector('[data-tab="dashboard"]');
 
-let username = "Admin_KeyAcc";
-let password = "dirthuborzexonhub121212123311";
-let generatedKeys = JSON.parse(localStorage.getItem("keys")) || [];
+tabs.forEach(tab => tab.addEventListener('click', () => {
+  tabs.forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  tabContents.forEach(tc=>tc.classList.remove('active'));
+  document.getElementById(tab.dataset.tab).classList.add('active');
+}));
 
-// Tab navigation
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    const target = tab.dataset.tab;
+// Register
+document.getElementById('registerBtn').addEventListener('click', async ()=>{
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
 
-    tabContents.forEach(content => {
-      content.classList.remove('active');
-      if (content.id === target) content.classList.add('active');
-    });
-  });
-});
+  if(!username || !password) return;
 
-// Copy buttons
-document.querySelectorAll('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    navigator.clipboard.writeText(btn.dataset.copy);
-    btn.textContent = "Copied!";
-    setTimeout(() => (btn.textContent = `Copy ${btn.dataset.copy}`), 1500);
-  });
-});
-
-// Login
-loginBtn.addEventListener('click', () => {
-  const user = document.getElementById('username').value;
-  const pass = document.getElementById('password').value;
-
-  if (user === username && pass === password) {
-    loginMsg.textContent = "Login successful!";
-    setTimeout(() => {
-      document.getElementById('login').classList.add('hidden');
-      document.querySelector('[data-tab="login"]').remove();
-      navbar.insertAdjacentHTML('beforeend', `<button class="tab-button" data-tab="dashboard">Dashboard</button>`);
-      dashboard.classList.remove('hidden');
-      showTab('dashboard');
-      refreshKeys();
-    }, 800);
+  const { data, error } = await supabase.from('users').insert([{ username, password, keys: JSON.stringify([]) }]);
+  if(error){
+    document.getElementById('registerMsg').textContent = "Error: "+error.message;
   } else {
-    loginMsg.textContent = "Invalid credentials.";
+    document.getElementById('registerMsg').textContent = "Account created! You can log in.";
   }
 });
 
-function showTab(id) {
-  tabContents.forEach(c => c.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+// Login
+let currentUser = null;
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
 
-// Dashboard inner tabs
-dashTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    dashTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    dashContents.forEach(c => c.classList.remove('active'));
-    document.getElementById(tab.dataset.dash).classList.add('active');
-  });
+  const { data, error } = await supabase.from('users').select('*').eq('username', username).eq('password', password).single();
+  if(error || !data){
+    document.getElementById('loginMsg').textContent = "Invalid credentials!";
+  } else {
+    currentUser = data;
+    document.getElementById('loginMsg').textContent = "Login successful!";
+    dashboardTabBtn.style.display = "inline-block";
+    showTab('dashboard');
+    refreshKeys();
+  }
 });
 
-// Generate key
-generateKeyBtn.addEventListener('click', () => {
+// Dashboard
+const keyList = document.getElementById('keyList');
+document.getElementById('generateKey').addEventListener('click', async ()=>{
+  if(!currentUser) return;
   const key = generateKey();
-  generatedKeys.push(key);
-  localStorage.setItem("keys", JSON.stringify(generatedKeys));
+  let keys = JSON.parse(currentUser.keys);
+  keys.push(key);
+  await supabase.from('users').update({ keys: JSON.stringify(keys) }).eq('id', currentUser.id);
+  currentUser.keys = JSON.stringify(keys);
   refreshKeys();
 });
 
-function generateKey() {
+function generateKey(){
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let key = "";
-  for (let i = 0; i < 16; i++) {
-    if (i > 0 && i % 4 === 0) key += "-";
-    key += chars.charAt(Math.floor(Math.random() * chars.length));
+  for(let i=0;i<16;i++){
+    if(i>0 && i%4===0) key+="-";
+    key += chars.charAt(Math.floor(Math.random()*chars.length));
   }
   return key;
 }
 
-function refreshKeys() {
-  keyList.innerHTML = "";
-  generatedKeys.forEach(k => {
-    const li = document.createElement("li");
+function refreshKeys(){
+  keyList.innerHTML="";
+  const keys = JSON.parse(currentUser.keys);
+  keys.forEach(k=>{
+    const li = document.createElement('li');
     li.textContent = k;
     keyList.appendChild(li);
   });
 }
 
-// Account updates
-document.getElementById('updateAccount').addEventListener('click', () => {
-  const newUser = document.getElementById('newUsername').value.trim();
-  const newPass = document.getElementById('newPassword').value.trim();
-
-  if (newUser) username = newUser;
-  if (newPass) password = newPass;
-
-  accountMsg.textContent = "Account updated successfully!";
-  setTimeout(() => (accountMsg.textContent = ""), 2000);
-});
-
 // Logout
-logoutBtn.addEventListener('click', () => {
+document.getElementById('logoutBtn').addEventListener('click', ()=>{
+  currentUser = null;
   showTab('home');
-  dashboard.classList.add('hidden');
-  navbar.insertAdjacentHTML('beforeend', `<button class="tab-button" data-tab="login">Login</button>`);
+  dashboardTabBtn.style.display = "none";
 });
+
+function showTab(id){
+  tabContents.forEach(tc=>tc.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tabs.forEach(t=>t.classList.remove('active'));
+  document.querySelector(`[data-tab="${id}"]`)?.classList.add('active');
+}
