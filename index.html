@@ -4,68 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dirt's Rbx Scripts</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.7.0/dist/supabase.min.js"></script>
 </head>
 <body>
   <header>
-    <h1 class="logo">Dirt's <span>Rbx Scripts</span></h1>
-    <nav id="navbar">
-      <button class="tab-button active" data-tab="home">Home</button>
-      <button class="tab-button" data-tab="login">Login</button>
-      <button class="tab-button" data-tab="tos">TOS</button>
+    <div class="logo">Dirt's <span>Rbx Scripts</span></div>
+    <nav>
+      <button class="tab-btn active" data-tab="home">Home</button>
+      <button class="tab-btn" data-tab="register">Register</button>
+      <button class="tab-btn" data-tab="login">Login</button>
+      <button class="tab-btn" data-tab="dashboard" style="display:none;">Dashboard</button>
     </nav>
   </header>
 
   <main>
+    <!-- Home -->
     <section id="home" class="tab-content active">
-      <h2>Welcome to Dirt's Rbx Scripts</h2>
-      <p>Choose a hub to copy:</p>
-      <div class="button-group">
-        <button class="copy-btn" data-copy="Zexon Hub">Copy Zexon Hub</button>
-        <button class="copy-btn" data-copy="Dirt Hub">Copy Dirt Hub</button>
-      </div>
-      <a href="https://discord.gg/YOURINVITE" target="_blank" class="discord-btn">Join our Discord</a>
+      <h1>Welcome to Dirt's Rbx Scripts</h1>
+      <p>Manage your keys and accounts securely.</p>
     </section>
 
+    <!-- Register -->
+    <section id="register" class="tab-content">
+      <h2>Create Account</h2>
+      <input type="text" id="regUsername" placeholder="Username">
+      <input type="password" id="regPassword" placeholder="Password">
+      <button id="registerBtn" class="btn">Register</button>
+      <p id="registerMsg" class="msg"></p>
+    </section>
+
+    <!-- Login -->
     <section id="login" class="tab-content">
       <h2>Login</h2>
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button id="loginBtn">Login</button>
-      <p id="loginMsg"></p>
+      <input type="text" id="loginUsername" placeholder="Username">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button id="loginBtn" class="btn">Login</button>
+      <p id="loginMsg" class="msg"></p>
     </section>
 
-    <section id="dashboard" class="tab-content hidden">
+    <!-- Dashboard -->
+    <section id="dashboard" class="tab-content">
       <h2>Dashboard</h2>
-      <div class="dashboard-nav">
-        <button class="dash-tab active" data-dash="keys">Keys</button>
-        <button class="dash-tab" data-dash="account">Account</button>
-      </div>
-
-      <div id="keys" class="dash-content active">
-        <h3>Key Generator</h3>
-        <button id="generateKey">Generate 16-Digit Key</button>
-        <ul id="keyList"></ul>
-      </div>
-
-      <div id="account" class="dash-content">
-        <h3>Account Settings</h3>
-        <input type="text" id="newUsername" placeholder="New Username">
-        <input type="password" id="newPassword" placeholder="New Password">
-        <button id="updateAccount">Update Account</button>
-        <button id="logoutBtn" class="logout">Log Out</button>
-        <p id="accountMsg"></p>
-      </div>
-    </section>
-
-    <section id="tos" class="tab-content">
-      <h2>Terms of Service</h2>
-      <p>By using this site, you agree that we are not responsible for any account bans, data loss, or damages caused by using our scripts.</p>
+      <button id="generateKey" class="btn">Generate 16-Digit Key</button>
+      <ul id="keyList"></ul>
+      <button id="logoutBtn" class="btn danger">Log Out</button>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 Dirt's Rbx Scripts | All Rights Reserved</p>
+    <p>© 2025 Dirt's Rbx Scripts</p>
   </footer>
 
   <script src="script.js"></script>
