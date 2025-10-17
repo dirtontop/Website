@@ -1,73 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScriptVault | Roblox Scripts & Game Files</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dirt's Rbx Scripts</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Background glow elements -->
-  <div class="glow glow1"></div>
-  <div class="glow glow2"></div>
+  <header>
+    <h1 class="logo">Dirt's <span>Rbx Scripts</span></h1>
+    <nav id="navbar">
+      <button class="tab-button active" data-tab="home">Home</button>
+      <button class="tab-button" data-tab="login">Login</button>
+      <button class="tab-button" data-tab="tos">TOS</button>
+    </nav>
+  </header>
 
-  <!-- Navigation -->
-  <nav>
-    <div class="logo">ScriptVault</div>
-    <ul class="nav-links">
-      <li><a href="#">Home</a></li>
-      <li><a href="#">Scripts</a></li>
-      <li><a href="#">Game Files</a></li>
-      <li><a href="#">Utilities</a></li>
-      <li><a href="#">About</a></li>
-    </ul>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Discover Premium Roblox Scripts</h1>
-    <p>Enhance your Roblox experience with clean, well-made, and powerful scripts designed for creativity, performance, and fun.</p>
-    <a href="#" class="cta">Explore Now</a>
-  </section>
-
-  <!-- Card Grid -->
-  <section class="cards">
-    <div class="card">
-      <div class="card-content">
-        <h3>Teleport Script</h3>
-        <p>Instantly travel across the map with smooth transitions and particle effects.</p>
-        <button>View Script</button>
+  <main>
+    <section id="home" class="tab-content active">
+      <h2>Welcome to Dirt's Rbx Scripts</h2>
+      <p>Choose a hub to copy:</p>
+      <div class="button-group">
+        <button class="copy-btn" data-copy="Zexon Hub">Copy Zexon Hub</button>
+        <button class="copy-btn" data-copy="Dirt Hub">Copy Dirt Hub</button>
       </div>
-    </div>
+      <a href="https://discord.gg/YOURINVITE" target="_blank" class="discord-btn">Join our Discord</a>
+    </section>
 
-    <div class="card">
-      <div class="card-content">
-        <h3>ESP Utility</h3>
-        <p>See players, NPCs, or chests through walls with clean, performance-friendly visuals.</p>
-        <button>View Script</button>
+    <section id="login" class="tab-content">
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button id="loginBtn">Login</button>
+      <p id="loginMsg"></p>
+    </section>
+
+    <section id="dashboard" class="tab-content hidden">
+      <h2>Dashboard</h2>
+      <div class="dashboard-nav">
+        <button class="dash-tab active" data-dash="keys">Keys</button>
+        <button class="dash-tab" data-dash="account">Account</button>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-content">
-        <h3>Black Hole Ability</h3>
-        <p>Create a realistic gravitational pull that draws in everything nearby.</p>
-        <button>View Script</button>
+      <div id="keys" class="dash-content active">
+        <h3>Key Generator</h3>
+        <button id="generateKey">Generate 16-Digit Key</button>
+        <ul id="keyList"></ul>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-content">
-        <h3>File Manager</h3>
-        <p>Upload, share, and organize Roblox data files directly from your dashboard.</p>
-        <button>Open Files</button>
+      <div id="account" class="dash-content">
+        <h3>Account Settings</h3>
+        <input type="text" id="newUsername" placeholder="New Username">
+        <input type="password" id="newPassword" placeholder="New Password">
+        <button id="updateAccount">Update Account</button>
+        <button id="logoutBtn" class="logout">Log Out</button>
+        <p id="accountMsg"></p>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
+    <section id="tos" class="tab-content">
+      <h2>Terms of Service</h2>
+      <p>By using this site, you agree that we are not responsible for any account bans, data loss, or damages caused by using our scripts.</p>
+    </section>
+  </main>
+
   <footer>
-    <p>© 2025 ScriptVault. All Rights Reserved.</p>
+    <p>© 2025 Dirt's Rbx Scripts | All Rights Reserved</p>
   </footer>
 
   <script src="script.js"></script>
