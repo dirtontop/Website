@@ -16,18 +16,14 @@ tabs.forEach(tab => tab.addEventListener('click', () => {
 }));
 
 // Register
-document.getElementById('registerBtn').addEventListener('click', async ()=>{
-  const username = document.getElementById('regUsername').value.trim();
-  const password = document.getElementById('regPassword').value.trim();
-
+document.getElementById('signupBtn').addEventListener('click', async ()=>{
+  const username = document.getElementById('signupUsername').value.trim();
+  const password = document.getElementById('signupPassword').value.trim();
   if(!username || !password) return;
 
   const { data, error } = await supabase.from('users').insert([{ username, password, keys: JSON.stringify([]) }]);
-  if(error){
-    document.getElementById('registerMsg').textContent = "Error: "+error.message;
-  } else {
-    document.getElementById('registerMsg').textContent = "Account created! You can log in.";
-  }
+  if(error){ document.getElementById('signupMsg').textContent = "Error: "+error.message; }
+  else { document.getElementById('signupMsg').textContent = "Account created! You can log in."; }
 });
 
 // Login
@@ -37,18 +33,18 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const password = document.getElementById('loginPassword').value.trim();
 
   const { data, error } = await supabase.from('users').select('*').eq('username', username).eq('password', password).single();
-  if(error || !data){
-    document.getElementById('loginMsg').textContent = "Invalid credentials!";
-  } else {
+  if(error || !data){ document.getElementById('loginMsg').textContent = "Invalid credentials!"; }
+  else {
     currentUser = data;
     document.getElementById('loginMsg').textContent = "Login successful!";
     dashboardTabBtn.style.display = "inline-block";
     showTab('dashboard');
-    refreshKeys();
+    if(currentUser.username === "Admin") showAdminPanel();
+    else showUserPanel();
   }
 });
 
-// Dashboard
+// User Dashboard
 const keyList = document.getElementById('keyList');
 document.getElementById('generateKey').addEventListener('click', async ()=>{
   if(!currentUser) return;
@@ -78,6 +74,26 @@ function refreshKeys(){
     li.textContent = k;
     keyList.appendChild(li);
   });
+}
+
+// Admin Panel
+async function showAdminPanel(){
+  document.getElementById('userDashboard').style.display="none";
+  document.getElementById('adminDashboard').style.display="block";
+  const { data, error } = await supabase.from('users').select('*');
+  const tbody = document.querySelector('#allUsersTable tbody');
+  tbody.innerHTML = "";
+  data.forEach(u=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${u.id}</td><td>${u.username}</td><td>${u.password}</td><td>${u.keys}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function showUserPanel(){
+  document.getElementById('adminDashboard').style.display="none";
+  document.getElementById('userDashboard').style.display="block";
+  refreshKeys();
 }
 
 // Logout
