@@ -1,121 +1,345 @@
-// Supabase
-const SUPABASE_URL='https://efitddfhnqfuahovkqap.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaXRkZGZobnFmdWFob3ZrcWFwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2ODg2MTYsImV4cCI6MjA3NjI2NDYxNn0.W4DBhr_TYEdEYvnjNS0V2zNYms0qb2oZOsV3eZdTEbE';
-const sb = supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+// ==========================================
+// TradePro Platform - JavaScript
+// ==========================================
 
-let currentUser=null;
+// Smooth Scrolling for Navigation
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        const navHeight = document.querySelector('.navbar').offsetHeight;
+        const sectionTop = section.offsetTop - navHeight;
+        
+        window.scrollTo({
+            top: sectionTop,
+            behavior: 'smooth'
+        });
+    }
+}
 
-// Outer tabs
-document.querySelectorAll('.tabbtn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-        const target=btn.dataset.tab;
-        document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
-        const panel=document.getElementById(target);
-        if(panel) panel.classList.add('active');
-    });
-});
-
-// Dashboard inner tabs
-document.querySelectorAll('.dashTab').forEach(tab=>{
-    tab.addEventListener('click', ()=>{
-        const target=tab.dataset.dtab;
-        document.querySelectorAll('.dashTab').forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-        document.querySelectorAll('.dashPanel').forEach(p=>p.classList.remove('active'));
-        const panel=document.getElementById(target);
-        if(panel) panel.classList.add('active');
-    });
-});
-
-// Copy buttons
-document.getElementById('copyZexon').addEventListener('click', ()=>navigator.clipboard.writeText('Zexon Hub Script'));
-document.getElementById('copyDirt').addEventListener('click', ()=>navigator.clipboard.writeText('Dirt Hub Script'));
-document.getElementById('discordBtn').addEventListener('click', ()=>window.open('https://discord.gg/YOURINVITE','_blank'));
-
-// Login
-document.getElementById('loginBtn').addEventListener('click', async ()=>{
-    const u=document.getElementById('username').value;
-    const p=document.getElementById('password').value;
-    const {data,error}=await sb.from('users').select().eq('username',u).single();
-    if((u==='Admin'&&p==='AdminSecret123') || (data && data.password===p)){
-        currentUser = { ...data, username:u };
-        alert('Logged in!');
-        document.querySelector('[data-tab="login"]').style.display='none';
-        const dashBtn=document.querySelector('[data-tab="dashboard"]');
-        dashBtn.style.display='inline-block';
-        dashBtn.click();
-        if(u==='Admin') document.querySelector('.dashTab[data-dtab="adminpanel"]').style.display='inline-block';
-        loadKeys();
-        if(u==='Admin') loadAllUsers();
-    } else alert('Invalid credentials!');
-});
-
-// Signup
-document.getElementById('signupBtn').addEventListener('click', async ()=>{
-    const u=document.getElementById('username').value;
-    const p=document.getElementById('password').value;
-    const {data}=await sb.from('users').select().eq('username',u).single();
-    if(data) return alert('Username exists!');
-    await sb.from('users').insert([{ username:u, password:p, keys:'[]' }]);
-    alert('Account created! Log in now.');
-});
-
-// Log out
-document.getElementById('logoutBtn').addEventListener('click', ()=>{
-    currentUser=null;
-    document.querySelector('[data-tab="dashboard"]').style.display='none';
-    document.querySelector('[data-tab="login"]').style.display='inline-block';
-    document.querySelector('[data-tab="login"]').click();
-});
-
-// Generate new key
-document.getElementById('genKeyBtn').addEventListener('click', async ()=>{
-    if(!currentUser) return alert('Not logged in!');
-    const newKey = Array.from({length:4},()=>Math.random().toString(36).slice(2,6).toUpperCase()).join('-');
-    let keys = JSON.parse(currentUser.keys||'[]');
-    keys.push(newKey);
-    await sb.from('users').update({ keys: JSON.stringify(keys) }).eq('id', currentUser.id);
-    currentUser.keys=JSON.stringify(keys);
-    loadKeys();
-    alert('Key generated: '+newKey);
-});
-
-// Load user keys
-async function loadKeys(){
-    if(!currentUser) return;
-    let keys = JSON.parse(currentUser.keys||'[]');
-    const list = document.getElementById('keysList');
-    list.innerHTML='';
-    keys.forEach(k=>{
-        const li=document.createElement('li'); li.textContent=k; list.appendChild(li);
+// Copy Script to Clipboard
+function copyScript() {
+    const scriptCode = document.getElementById('scriptCode');
+    const text = scriptCode.textContent;
+    
+    // Use the Clipboard API
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification();
+    }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showNotification();
+        } catch (err) {
+            alert('Failed to copy script. Please try selecting and copying manually.');
+        }
+        
+        document.body.removeChild(textArea);
     });
 }
 
-// Load all users (Admin)
-async function loadAllUsers(){
-    const {data}=await sb.from('users').select();
-    const list=document.getElementById('allUsersList');
-    list.innerHTML='';
-    data.forEach(u=>{
-        const li=document.createElement('li');
-        li.textContent=`${u.username} | ${u.password} | Keys: ${u.keys}`;
-        list.appendChild(li);
+// Show Copy Notification
+function showNotification() {
+    const notification = document.getElementById('notification');
+    notification.classList.add('show');
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 3000);
+}
+
+// Active Navigation Link Handler
+function updateActiveNavLink() {
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    let current = '';
+    const scrollPosition = window.pageYOffset;
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+            current = sectionId;
+        }
+    });
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
     });
 }
 
-// Update profile
-document.getElementById('updateProfile').addEventListener('click', async ()=>{
-    if(!currentUser) return;
-    const newU=document.getElementById('newUsername').value;
-    const newP=document.getElementById('newPassword').value;
-    const updateObj={};
-    if(newU) updateObj.username=newU;
-    if(newP) updateObj.password=newP;
-    if(Object.keys(updateObj).length===0) return;
-    await sb.from('users').update(updateObj).eq('id', currentUser.id);
-    if(newU) currentUser.username=newU;
-    if(newP) currentUser.password=newP;
-    alert('Profile updated!');
-});
+// Navbar Scroll Effect
+function handleNavbarScroll() {
+    const navbar = document.querySelector('.navbar');
+    
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+}
+
+// Intersection Observer for Fade-in Animations
+function initObserver() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+    
+    // Observe ToS cards
+    const tosCards = document.querySelectorAll('.tos-card');
+    tosCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+    
+    // Observe info cards
+    const infoCards = document.querySelectorAll('.info-card');
+    infoCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = `all 0.6s ease ${index * 0.1}s`;
+        observer.observe(card);
+    });
+}
+
+// Handle Navigation Clicks
+function setupNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            scrollToSection(targetId);
+        });
+    });
+}
+
+// Parallax Effect for Hero Section
+function handleParallax() {
+    const scrolled = window.pageYOffset;
+    const heroContent = document.querySelector('.hero-content');
+    const heroStats = document.querySelector('.hero-stats');
+    
+    if (heroContent && heroStats) {
+        heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+        heroStats.style.transform = `translateY(${scrolled * 0.2}px)`;
+    }
+}
+
+// Add Hover Effect to Buttons
+function initButtonEffects() {
+    const buttons = document.querySelectorAll('.btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', function(e) {
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.2);
+                width: 100px;
+                height: 100px;
+                margin-top: -50px;
+                margin-left: -50px;
+                animation: ripple 0.6s;
+                pointer-events: none;
+            `;
+            
+            const rect = button.getBoundingClientRect();
+            ripple.style.left = e.clientX - rect.left + 'px';
+            ripple.style.top = e.clientY - rect.top + 'px';
+            
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+}
+
+// Stats Counter Animation
+function animateStats() {
+    const statCards = document.querySelectorAll('.stat-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statCard = entry.target;
+                statCard.style.animation = 'fadeInUp 0.6s ease forwards';
+                observer.unobserve(statCard);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    statCards.forEach(card => {
+        observer.observe(card);
+    });
+}
+
+// Add Typing Effect to Hero Title (Optional Enhancement)
+function addTypingEffect() {
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+        const text = heroTitle.textContent;
+        heroTitle.textContent = '';
+        heroTitle.style.opacity = '1';
+        
+        let index = 0;
+        const typingSpeed = 50;
+        
+        function type() {
+            if (index < text.length) {
+                heroTitle.textContent += text.charAt(index);
+                index++;
+                setTimeout(type, typingSpeed);
+            }
+        }
+        
+        // Uncomment to enable typing effect
+        // setTimeout(type, 500);
+    }
+}
+
+// Preload Images and Assets
+function preloadAssets() {
+    // Add any image preloading here if needed
+    console.log('Assets loaded');
+}
+
+// Handle Window Resize
+function handleResize() {
+    // Add any resize-specific logic here
+    const width = window.innerWidth;
+    
+    if (width < 768) {
+        // Mobile specific adjustments
+        console.log('Mobile view active');
+    }
+}
+
+// Add Easter Egg (Konami Code)
+function initEasterEgg() {
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === konamiCode[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                activateEasterEgg();
+                konamiIndex = 0;
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
+}
+
+function activateEasterEgg() {
+    document.body.style.animation = 'rainbow 3s linear infinite';
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    setTimeout(() => {
+        document.body.style.animation = '';
+        style.remove();
+    }, 3000);
+}
+
+// Performance Monitoring
+function initPerformanceMonitoring() {
+    if ('performance' in window) {
+        window.addEventListener('load', () => {
+            const perfData = window.performance.timing;
+            const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+            console.log(`Page load time: ${pageLoadTime}ms`);
+        });
+    }
+}
+
+// Initialize All Features
+function init() {
+    // Core functionality
+    setupNavigation();
+    initObserver();
+    animateStats();
+    initButtonEffects();
+    
+    // Optional features
+    initEasterEgg();
+    preloadAssets();
+    initPerformanceMonitoring();
+    
+    // Event listeners
+    window.addEventListener('scroll', () => {
+        updateActiveNavLink();
+        handleNavbarScroll();
+        handleParallax();
+    });
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Log initialization
+    console.log('%c🎮 TradePro Platform Loaded', 'color: #6366f1; font-size: 20px; font-weight: bold;');
+    console.log('%cVersion 1.0.0', 'color: #8b5cf6; font-size: 14px;');
+}
+
+// Run initialization when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Export functions for global access (if needed)
+window.TradePro = {
+    scrollToSection,
+    copyScript,
+    showNotification
+};
