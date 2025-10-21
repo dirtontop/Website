@@ -1,129 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dirt's Rbx Scripts</title>
-<link rel="stylesheet" href="styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradePro - Premium Trading Platform</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page">
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">DR</div>
-      <div class="title">
-        <div class="main">Dirt's <span>Rbx</span> Scripts</div>
-        <div class="sub">Neat • Clean • Professional</div>
-      </div>
-    </div>
-    <nav class="nav">
-      <button data-tab="home" class="tabbtn active">Home</button>
-      <button data-tab="login" class="tabbtn">Log In / Signup</button>
-      <button data-tab="dashboard" class="tabbtn" style="display:none">Dashboard</button>
-      <button data-tab="tos" class="tabbtn">TOS</button>
-      <button data-tab="about" class="tabbtn">About</button>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">TradePro</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#tos" class="nav-link">Terms</a>
+                <a href="#script" class="nav-link">Get Started</a>
+            </div>
+        </div>
     </nav>
-  </header>
 
-  <main class="container">
-    <!-- Home -->
-    <section id="home" class="tabpanel active">
-      <h1>Welcome to <span>Dirt's Rbx Scripts</span></h1>
-      <p class="lead">Quick tools for devs & scripters — eye candy included.</p>
-      <div class="cards">
-        <div class="card">
-          <h3>Zexon Hub</h3>
-          <p>Copy the Zexon Hub value to your clipboard.</p>
-          <div class="row">
-            <button id="copyZexon" class="btn">Copy Zexon Hub</button>
-            <button id="discordBtn" class="btn ghost">Open Discord</button>
-          </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Next-Gen Trading Platform</h1>
+            <p class="hero-subtitle">Secure, fast, and reliable in-game currency trading for the future of gaming</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('script')">Get Started</button>
+                <button class="btn btn-outline" onclick="scrollToSection('features')">Learn More</button>
+            </div>
         </div>
-        <div class="card">
-          <h3>Dirt Hub</h3>
-          <p>Copy the Dirt Hub value to your clipboard.</p>
-          <div class="row">
-            <button id="copyDirt" class="btn">Copy Dirt Hub</button>
-          </div>
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Secure</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Fast</div>
+                <div class="stat-label">Transactions</div>
+            </div>
         </div>
-      </div>
     </section>
 
-    <!-- Login / Signup -->
-    <section id="login" class="tabpanel">
-      <h2>Log In / Sign Up</h2>
-      <form id="loginForm">
-        <label>Username</label>
-        <input id="username" required>
-        <label>Password</label>
-        <input id="password" type="password" required>
-        <div class="row">
-          <button id="loginBtn" class="btn">Log In</button>
-          <button id="signupBtn" class="btn ghost">Sign Up</button>
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose TradePro?</h2>
+                <p class="section-subtitle">Built for the modern gamer with cutting-edge technology</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Bank-Level Security</h3>
+                    <p>Your trades are protected with enterprise-grade encryption and security protocols</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Instant trade execution with our optimized trading engine</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>In-Game Currency</h3>
+                    <p>Trade with our exclusive game currency - not real money or Robux</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Track your trades and portfolio with advanced analytics</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Global Community</h3>
+                    <p>Join thousands of traders worldwide on our Discord</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Fraud Prevention</h3>
+                    <p>Advanced systems to protect against scams and fraud</p>
+                </div>
+            </div>
         </div>
-      </form>
-      <p class="hint">Admin account: <strong>Admin / AdminSecret123</strong></p>
     </section>
 
-    <!-- Dashboard -->
-    <section id="dashboard" class="tabpanel">
-      <h2>Dashboard</h2>
-      <div class="dashboard-tabs">
-        <button class="dashTab active" data-dtab="mykeys">My Keys</button>
-        <button class="dashTab" data-dtab="genkeys">Generate Key</button>
-        <button class="dashTab" data-dtab="settings">Settings</button>
-        <button class="dashTab" data-dtab="adminpanel" style="display:none">Admin Panel</button>
-      </div>
+    <!-- Terms of Service Section -->
+    <section id="tos" class="tos-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Terms of Service</h2>
+                <p class="section-subtitle">Please read carefully before using our platform</p>
+            </div>
 
-      <!-- My Keys -->
-      <div id="mykeys" class="dashPanel active">
-        <h3>Your Keys</h3>
-        <ul id="keysList"></ul>
-      </div>
+            <div class="tos-content">
+                <div class="alert alert-critical">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-content">
+                        <h3>Critical Information</h3>
+                        <p><strong>NO REFUNDS OR TRADE-BACKS:</strong> All transactions are final and irreversible.</p>
+                        <p><strong>IN-GAME CURRENCY ONLY:</strong> This is NOT real Robux. All trades use our custom game currency with no real-world value.</p>
+                    </div>
+                </div>
 
-      <!-- Generate Key -->
-      <div id="genkeys" class="dashPanel">
-        <h3>Generate Key</h3>
-        <button id="genKeyBtn" class="btn big">Generate New Key</button>
-      </div>
+                <div class="tos-grid">
+                    <div class="tos-card">
+                        <div class="tos-number">01</div>
+                        <h3>No Refunds Policy</h3>
+                        <p>All trades completed through TradePro are <strong>final and irreversible</strong>. We maintain a strict no-refunds policy:</p>
+                        <ul>
+                            <li>Completed trades cannot be reversed under any circumstances</li>
+                            <li>No refunds will be issued for any reason whatsoever</li>
+                            <li>Trade-backs are strictly prohibited</li>
+                            <li>All transactions are considered final upon completion</li>
+                            <li>Disputes must be resolved through our support system</li>
+                        </ul>
+                    </div>
 
-      <!-- Settings -->
-      <div id="settings" class="dashPanel">
-        <h3>Settings</h3>
-        <label>New Username</label>
-        <input id="newUsername">
-        <label>New Password</label>
-        <input id="newPassword" type="password">
-        <button id="updateProfile" class="btn">Update Profile</button>
-        <button id="logoutBtn" class="btn ghost">Log Out</button>
-      </div>
+                    <div class="tos-card">
+                        <div class="tos-number">02</div>
+                        <h3>In-Game Currency Only</h3>
+                        <p>TradePro uses exclusively <strong>in-game currency</strong> for our upcoming game:</p>
+                        <ul>
+                            <li>This currency has <strong>zero real-world monetary value</strong></li>
+                            <li>This is <strong>NOT Robux</strong> or any official Roblox currency</li>
+                            <li>Cannot be exchanged for real money or other currencies</li>
+                            <li>Only usable within our game's ecosystem</li>
+                            <li>Not affiliated with Roblox Corporation in any way</li>
+                        </ul>
+                    </div>
 
-      <!-- Admin Panel -->
-      <div id="adminpanel" class="dashPanel">
-        <h3>Admin Panel</h3>
-        <ul id="allUsersList"></ul>
-      </div>
+                    <div class="tos-card">
+                        <div class="tos-number">03</div>
+                        <h3>User Responsibilities</h3>
+                        <p>By using TradePro, you acknowledge and agree to:</p>
+                        <ul>
+                            <li>Thoroughly verify all trade details before confirming</li>
+                            <li>Accept full responsibility for your trading decisions</li>
+                            <li>Use the platform in accordance with game rules</li>
+                            <li>Not exploit, abuse, or manipulate the trading system</li>
+                            <li>Report any bugs or issues immediately</li>
+                        </ul>
+                    </div>
+
+                    <div class="tos-card">
+                        <div class="tos-number">04</div>
+                        <h3>Limitation of Liability</h3>
+                        <p>TradePro and its operators are <strong>not liable</strong> for:</p>
+                        <ul>
+                            <li>User errors or mistakes in trading</li>
+                            <li>Disputes between trading parties</li>
+                            <li>Loss of in-game currency due to user decisions</li>
+                            <li>Technical issues beyond our control</li>
+                            <li>Any consequences resulting from platform use</li>
+                        </ul>
+                    </div>
+
+                    <div class="tos-card">
+                        <div class="tos-number">05</div>
+                        <h3>Account & Security</h3>
+                        <p>Users are responsible for maintaining account security:</p>
+                        <ul>
+                            <li>Keep login credentials secure and confidential</li>
+                            <li>Do not share accounts with others</li>
+                            <li>Report unauthorized access immediately</li>
+                            <li>Enable all available security features</li>
+                            <li>We are not liable for compromised accounts</li>
+                        </ul>
+                    </div>
+
+                    <div class="tos-card">
+                        <div class="tos-number">06</div>
+                        <h3>Modifications & Updates</h3>
+                        <p>We reserve the right to modify these terms:</p>
+                        <ul>
+                            <li>Terms may be updated without prior notice</li>
+                            <li>Continued use implies acceptance of changes</li>
+                            <li>Major changes will be announced on Discord</li>
+                            <li>Users should review terms regularly</li>
+                            <li>Last updated: October 21, 2025</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- TOS -->
-    <section id="tos" class="tabpanel">
-      <h2>Terms of Service</h2>
-      <p>We provide tools for generating keys and copying hub scripts. Use at your own risk. We are not responsible for account bans or losses.</p>
+    <!-- Get Script Section -->
+    <section id="script" class="script-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get Started with TradePro</h2>
+                <p class="section-subtitle">Integrate our trading system into your game in minutes</p>
+            </div>
+
+            <div class="script-container">
+                <div class="script-header">
+                    <h3>Trading System Script</h3>
+                    <span class="script-version">v1.0.0</span>
+                </div>
+                <pre class="script-code" id="scriptCode">-- TradePro Trading System
+
+    
+print("Coming Soon")
+
+
+return TradingSystem</pre>
+                
+                <div class="script-actions">
+                    <button class="btn btn-primary btn-large" onclick="copyScript()">
+                        <span class="btn-icon">📋</span>
+                        Copy Script to Clipboard
+                    </button>
+                    <a href="https://discord.gg/roblox" class="btn btn-discord btn-large" target="_blank">
+                        <span class="btn-icon">💬</span>
+                        Join Our Discord Server
+                    </a>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">📖</div>
+                    <h4>Documentation</h4>
+                    <p>Full API documentation and integration guides available on our Discord server</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">💡</div>
+                    <h4>Need Help?</h4>
+                    <p>Our community is ready to assist with implementation and troubleshooting</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🚀</div>
+                    <h4>Updates</h4>
+                    <p>Get notified about new features and updates by joining our Discord</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- About -->
-    <section id="about" class="tabpanel">
-      <h2>About</h2>
-      <p>This site is a fully front-end demo with Supabase for saving users and keys.</p>
-    </section>
-  </main>
-  <footer class="footer">
-    <div>© <span id="year"></span> Dirt's Rbx Scripts — Built with ❤️</div>
-  </footer>
-</div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">TradePro</span>
+                    </div>
+                    <p>The future of in-game trading</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Platform</h4>
+                        <a href="#features">Features</a>
+                        <a href="#tos">Terms of Service</a>
+                        <a href="#script">Get Started</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Community</h4>
+                        <a href="https://discord.gg/roblox" target="_blank">Discord</a>
+                        <a href="#">Twitter</a>
+                        <a href="#">GitHub</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="#tos">Terms of Service</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TradePro. All rights reserved.</p>
+                <p class="footer-disclaimer">This platform uses in-game currency only. Not affiliated with Roblox Corporation.</p>
+            </div>
+        </div>
+    </footer>
 
-<script src="script.js"></script>
+    <!-- Copy Notification -->
+    <div class="notification" id="notification">
+        <div class="notification-icon">✓</div>
+        <div class="notification-text">Script copied to clipboard!</div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
