@@ -1,37 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Blue Script Site</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zexon Obfuscator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <div class="container">
-    <h1>Blue Script</h1>
-    <p class="subtitle">Fast • Clean • Powerful</p>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="logo-icon">Z</div>
+            <h1>ZEXON</h1>
+        </div>
+        
+        <div class="panel">
+            <h3>Configuration</h3>
+            
+            <div class="control-group">
+                <label>Obfuscation Preset</label>
+                <select id="preset">
+                    <option value="simple">Simple (Fast)</option>
+                    <option value="good" selected>Good (Standard VM)</option>
+                    <option value="evil">Evil (Max Security)</option>
+                </select>
+                <small class="hint">Intensity of protection.</small>
+            </div>
 
-    <div class="card">
-      <h2>Features</h2>
-      <ul>
-        <li>⚡ Fast execution</li>
-        <li>🛡️ Undetected & secure</li>
-        <li>🎮 Works on multiple games</li>
-        <li>🔄 Constant updates</li>
-      </ul>
-    </div>
+            <div class="control-group">
+                <label>Target Environment</label>
+                <select id="target">
+                    <option value="lua">Universal Lua 5.1+</option>
+                    <option value="roblox">Roblox (Luau)</option>
+                </select>
+                <small class="hint">Engine compatibility.</small>
+            </div>
 
-    <div class="card">
-      <h2>Script</h2>
-      <pre id="scriptBox">loadstring(game:HttpGet("https://example.com/script.lua"))()</pre>
+            <div class="stats-box" id="statsBox" style="display:none;">
+                <span id="lineCount">Lines: 0</span>
+                <span id="genTime">Time: 0ms</span>
+            </div>
+        </div>
 
-      <div class="buttons">
-        <button onclick="copyScript()">Copy Script</button>
-        <button class="buy" onclick="buy()">Purchase</button>
-      </div>
-    </div>
-  </div>
+        <div class="actions">
+            <button id="obfuscate" class="btn-primary">
+                <span>PROTECT SCRIPT</span>
+            </button>
+            <button id="copy" class="btn-secondary">COPY OUTPUT</button>
+            <button id="clear" class="btn-danger">CLEAR</button>
+        </div>
+    </aside>
 
-  <script src="script.js"></script>
+    <main class="editor-area">
+        <div class="editor-container">
+            <div class="editor-header">Input Script</div>
+            <textarea id="input" placeholder="print('Hello World')"></textarea>
+        </div>
+        
+        <div class="editor-container">
+            <div class="editor-header">Obfuscated Output</div>
+            <textarea id="output" readonly placeholder="// Output will generate here..."></textarea>
+        </div>
+    </main>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
