@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Elements
+    // UI Elements
     const els = {
         input: document.getElementById("input"),
         output: document.getElementById("output"),
@@ -13,45 +13,49 @@ document.addEventListener("DOMContentLoaded", () => {
         genTime: document.getElementById("genTime")
     };
 
-    // Utils
+    // --- UTILITIES ---
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const rndHex = (len) => [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
     
+    // Generate distinct, confusing variable names
     function getVar() {
-        const chars = ['l', '1', 'I', 'i', 'L', '0', 'O'];
+        // Mix of l, I, 1, 0 is classic but effective visual noise
+        const chars = ['l', 'I', '1', '0', 'O', 'L'];
         let s = "_";
-        for(let i=0; i<12; i++) s += chars[rnd(0, chars.length-1)];
-        return s + "_" + rndHex(4);
+        for(let i=0; i<10; i++) s += chars[rnd(0, chars.length-1)];
+        // Add a hex suffix to ensure mathematical uniqueness (prevents collisions)
+        return s + "_" + rndHex(4); 
     }
 
-    // --- BUTTON HANDLERS ---
+    // --- CORE HANDLERS ---
 
     els.btnObfuscate.onclick = () => {
         const code = els.input.value;
         if (!code.trim()) return;
 
-        // UI Loading State
+        // UI Feedback
         const originalText = els.btnObfuscate.innerText;
-        els.btnObfuscate.innerText = "PROCESSING...";
+        els.btnObfuscate.innerText = "ENTANGLING LOGIC...";
         els.btnObfuscate.disabled = true;
-        els.output.value = "-- Generating obfuscated script...";
+        els.output.value = "-- Analyzing control flow...\n-- Generating entangled state machine...";
 
-        // Process in Timeout to allow UI update
+        // Process async to keep UI responsive
         setTimeout(() => {
             const startTime = performance.now();
             try {
-                // Determine settings based on preset
                 const preset = els.preset.value;
                 const target = els.target.value;
                 
                 let result = "";
 
                 if (preset === 'simple') {
-                    result = generateSimple(code, target);
+                    result = generateSimple(code);
                 } else if (preset === 'good') {
-                    result = generateVM(code, target, 2500); // 2.5k lines
+                    // Good: ~3000 lines, standard entanglement
+                    result = generateEntangledVM(code, target, 3000); 
                 } else {
-                    result = generateVM(code, target, 12000); // 12k lines (EVIL)
+                    // Evil: ~10000 lines, heavy entanglement
+                    result = generateEntangledVM(code, target, 10000); 
                 }
 
                 els.output.value = result;
@@ -65,12 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } catch (e) {
                 console.error(e);
-                els.output.value = "-- ERROR GENERATING CODE --\n" + e.message;
+                els.output.value = "-- FATAL ERROR --\n" + e.message;
             } finally {
                 els.btnObfuscate.innerText = originalText;
                 els.btnObfuscate.disabled = false;
             }
-        }, 50);
+        }, 100);
     };
 
     els.btnCopy.onclick = () => {
@@ -87,111 +91,151 @@ document.addEventListener("DOMContentLoaded", () => {
         els.stats.style.display = "none";
     };
 
-    // --- GENERATORS ---
+    // --- GENERATION ENGINES ---
 
-    // 1. SIMPLE MODE: Just string encryption, no VM
-    function generateSimple(payload, target) {
+    function generateSimple(payload) {
+        // Fast, lightweight string escape (For small scripts)
         const vPayload = getVar();
         const vFunc = getVar();
-        
-        // Use byte escape sequence for compactness
         let escaped = "";
-        for(let i=0; i<payload.length; i++) {
-            escaped += "\\" + payload.charCodeAt(i);
-        }
-
-        let lua = `-- Zexon Simple Obfuscation\n`;
-        lua += `local ${vPayload} = "${escaped}"\n`;
-        lua += `local ${vFunc} = (loadstring or load)(${vPayload})\n`;
-        lua += `if ${vFunc} then ${vFunc}() end`;
-        
-        return lua;
+        for(let i=0; i<payload.length; i++) escaped += "\\" + payload.charCodeAt(i);
+        return `-- Zexon Simple\nlocal ${vPayload}="${escaped}"\nlocal ${vFunc}=(loadstring or load)(${vPayload})\nif ${vFunc} then ${vFunc}() end`;
     }
 
-    // 2. VM MODE (Good & Evil share logic, difference is line count)
-    function generateVM(payload, target, targetLines) {
-        // Setup Vars
-        const VAR_STATE = getVar();    
-        const VAR_STACK = getVar();    
-        const VAR_TABLE = getVar();    
-        const VAR_RUNNER = getVar();   
-        
+    // --- THE ENTANGLED VM (Anti-AI) ---
+    function generateEntangledVM(payload, target, targetLines) {
+        // 1. Setup Environment
+        const VAR_STATE = getVar();    // Current State ID
+        const VAR_STACK = getVar();    // Virtual Stack
+        const VAR_TABLE = getVar();    // Function Table
+        const VAR_RUNNER = getVar();   // Dispatcher
+        const VAR_KEY = getVar();      // Rolling Decryption Key
+
         const bytes = payload.split('').map(c => c.charCodeAt(0));
         let states = [];
+        
+        // Initial seeds
         let currentStateId = rnd(100000, 999999);
         const startId = currentStateId;
+        let rollingKey = rnd(1, 255); // The key evolves every step
 
-        // Create Real States
-        bytes.forEach(byte => {
+        // 2. Build Real Logic States
+        bytes.forEach((byte, index) => {
             const nextStateId = rnd(100000, 999999);
-            const key = rnd(1, 255);
-            const cipher = byte ^ key; 
+            
+            // --- ENTANGLEMENT LOGIC ---
+            // Instead of storing 'byte', we calculate it dynamically
+            // Target: We need 'cipher' such that: (cipher XOR rollingKey) = byte
+            const cipher = byte ^ rollingKey;
+            
+            // To prevent AI form seeing constants, we split 'cipher' into two variables
+            // v1 + v2 = cipher (roughly, using XOR or math)
+            const splitA = rnd(1, 255);
+            const splitB = cipher ^ splitA; // A ^ B = cipher
 
-            // Junk Math (To bloat lines)
-            let junkCode = "";
-            const junkLines = rnd(3, 6);
-            for(let j=0; j<junkLines; j++) {
-                const vJunk = getVar();
-                junkCode += `local ${vJunk}=(${rnd(1,999)}*${rnd(1,999)})%${rnd(100,9999)}\n`;
-            }
+            // Update rolling key for NEXT byte (Chain Dependency)
+            const nextKey = (rollingKey + byte) % 255;
+            
+            // --- MATH GENERATION ---
+            // We create 2 random variables that LOOK like junk, but are used to build the result.
+            const vMath1 = getVar();
+            const vMath2 = getVar();
+            const val1 = rnd(10, 500);
+            const val2 = rnd(10, 500);
+            
+            // We need to return 'nextStateId'.
+            // Instead of 'return 12345', we do 'return (calculated_junk) + offset'
+            const mathResult = val1 + val2; // The result of the "Junk"
+            const stateOffset = nextStateId - mathResult; 
 
             states.push({
-                code: `${VAR_TABLE}[${currentStateId}]=function()
-${junkCode}local k=${key}
-local v=${cipher}
-table.insert(${VAR_STACK},string.char(bit32.bxor(v,k)))
-return ${nextStateId}
+                code: `${VAR_TABLE}[${currentStateId}]=function(k)
+    -- Entangled Variables (AI cannot delete these)
+    local ${vMath1} = ${val1}
+    local ${vMath2} = ${val2}
+    
+    -- Opcode Logic
+    local p1 = ${splitA}
+    local p2 = ${splitB}
+    local c = bit32.bxor(p1, p2) -- Reassemble Cipher
+    local b = bit32.bxor(c, k)   -- Decrypt Byte using Rolling Key
+    
+    table.insert(${VAR_STACK}, string.char(b))
+    
+    -- Mutate Key for next state
+    local nk = (k + b) % 255
+    
+    -- Calculated Transition (Entangled)
+    -- If AI removes vMath vars, this calculation fails
+    return (${vMath1} + ${vMath2}) + ${stateOffset}, nk
 end`
             });
+
             currentStateId = nextStateId;
+            rollingKey = nextKey;
         });
 
-        // Create Fake States (Fill to targetLines)
-        // Approx 10 lines per state
-        const currentLines = states.length * 10;
-        const neededLines = targetLines - currentLines;
-        const fakeNodesNeeded = Math.max(0, Math.floor(neededLines / 10));
+        // 3. Fill with Fake States (to reach targetLines)
+        // We calculate how many we need. Each state is ~12 lines.
+        const currentLines = states.length * 12;
+        const needed = Math.max(0, Math.floor((targetLines - currentLines) / 12));
 
-        for(let i=0; i < fakeNodesNeeded; i++) {
+        for(let i=0; i < needed; i++) {
             const fakeId = rnd(100000, 999999);
-            let junkCode = "";
-            for(let j=0; j<5; j++) junkCode += `local ${getVar()}=math.sin(${rnd(1,99)})\n`;
-
+            // Fake math that looks real
+            const vF1 = getVar();
+            const vF2 = getVar();
+            
             states.push({
-                code: `${VAR_TABLE}[${fakeId}]=function()
-${junkCode}return ${rnd(100000,999999)}
+                code: `${VAR_TABLE}[${fakeId}]=function(k)
+    local ${vF1} = math.random(1,999)
+    local ${vF2} = (${vF1} * 2) % 255
+    -- Dead End
+    return ${rnd(100000,999999)}, k
 end`
             });
         }
 
-        // Shuffle
+        // 4. Shuffle States (Control Flow Flattening)
         states.sort(() => Math.random() - 0.5);
 
-        // Header
-        let lua = `-- Zexon ${targetLines > 5000 ? "EVIL" : "Standard"} Protection\n`;
+        // 5. Build Header
+        let lua = `-- [[ ZEXON PROTECTED | ${targetLines > 5000 ? "EVIL" : "STANDARD"} MODE ]]\n`;
+        lua += `-- [[ ENTANGLEMENT: ACTIVE | ROLLING KEYS: ACTIVE ]]\n`;
         
         if (target === 'roblox') {
-            lua += `local bit32 = bit32\nlocal task = task\n`; 
+            lua += `local bit32 = bit32\nlocal task = task\n`;
         } else {
             lua += `local bit32=bit32;pcall(function()bit32=bit32 or require('bit')end);bit32=bit32 or{bxor=function(a,b)return a~b end}\n`;
         }
-
+        
+        // Initial Seed
+        const initialKey = rnd(1, 255); 
+        // We must offset the first key because the loop calculates 'rollingKey'
+        // Actually, we pass initialKey into the first function.
+        
         lua += `local ${VAR_STATE}=${startId}\n`;
+        lua += `local ${VAR_KEY}=${initialKey}\n`; // Start Key
         lua += `local ${VAR_STACK}={}\n`;
         lua += `local ${VAR_TABLE}={}\n`;
+        
         lua += states.map(s => s.code).join("\n");
 
-        // Runner
+        // 6. Build Dispatcher
         lua += `
+-- [[ VM DISPATCHER ]]
 local function ${VAR_RUNNER}()
     local c = 0
     while ${VAR_TABLE}[${VAR_STATE}] do
         c = c + 1
-        ${VAR_STATE}=${VAR_TABLE}[${VAR_STATE}]()
+        -- Pass Key, Get New State + New Key
+        ${VAR_STATE}, ${VAR_KEY} = ${VAR_TABLE}[${VAR_STATE}](${VAR_KEY})
         ${target === 'roblox' ? 'if c%500==0 then task.wait() end' : ''}
     end
 end
 ${VAR_RUNNER}()
+
+-- [[ EXECUTION ]]
 local payload=table.concat(${VAR_STACK})
 local run=(loadstring or load)(payload)
 if run then run() end`;
