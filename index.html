@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zexon Obfuscator</title>
+    <title>Zexon Professional Obfuscator</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -13,55 +13,63 @@
     <aside class="sidebar">
         <div class="brand">
             <div class="logo-icon">Z</div>
-            <h1>ZEXON</h1>
+            <h1>ZEXON <span class="badge">PRO</span></h1>
         </div>
         
         <div class="panel">
-            <h3>Configuration</h3>
+            <h3>Protection Settings</h3>
             
             <div class="control-group">
-                <label>Obfuscation Preset</label>
+                <label>Security Level</label>
                 <select id="preset">
-                    <option value="simple">Simple (Fast)</option>
-                    <option value="good" selected>Good (Standard VM)</option>
-                    <option value="evil">Evil (Max Security)</option>
+                    <option value="light">Light (Performance)</option>
+                    <option value="standard" selected>Standard (Balanced)</option>
+                    <option value="maximum">Maximum (Heavy VM)</option>
                 </select>
-                <small class="hint">Intensity of protection.</small>
             </div>
 
             <div class="control-group">
-                <label>Target Environment</label>
+                <label>Target Engine</label>
                 <select id="target">
-                    <option value="lua">Universal Lua 5.1+</option>
+                    <option value="lua">Universal Lua (5.1+)</option>
                     <option value="roblox">Roblox (Luau)</option>
                 </select>
-                <small class="hint">Engine compatibility.</small>
+            </div>
+
+            <div class="control-group checkbox-group">
+                <input type="checkbox" id="debugMode">
+                <label for="debugMode">Enable Debug Tracing</label>
+                <small class="hint">Outputs execution steps to console. Useful for testing.</small>
             </div>
 
             <div class="stats-box" id="statsBox" style="display:none;">
-                <span id="lineCount">Lines: 0</span>
-                <span id="genTime">Time: 0ms</span>
+                <div class="stat-row"><span>Instructions:</span> <span id="instrCount">0</span></div>
+                <div class="stat-row"><span>Generation:</span> <span id="genTime">0ms</span></div>
             </div>
         </div>
 
         <div class="actions">
-            <button id="obfuscate" class="btn-primary">
-                <span>PROTECT SCRIPT</span>
-            </button>
+            <button id="obfuscate" class="btn-primary">PROTECT SOURCE</button>
             <button id="copy" class="btn-secondary">COPY OUTPUT</button>
-            <button id="clear" class="btn-danger">CLEAR</button>
+            <button id="clear" class="btn-danger">RESET</button>
         </div>
     </aside>
 
     <main class="editor-area">
         <div class="editor-container">
-            <div class="editor-header">Input Script</div>
-            <textarea id="input" placeholder="print('Hello World')"></textarea>
+            <div class="editor-header">
+                <span>Source Code</span>
+                <span class="badge-lang">LUA</span>
+            </div>
+            <textarea id="input" placeholder="print('Hello World') -- Paste script here"></textarea>
         </div>
         
         <div class="editor-container">
-            <div class="editor-header">Obfuscated Output</div>
-            <textarea id="output" readonly placeholder="// Output will generate here..."></textarea>
+            <div class="editor-header">
+                <span>Obfuscated Output</span>
+                <span class="badge-lang">LUA VM</span>
+            </div>
+            <textarea id="output" readonly placeholder="-- Output will appear here..."></textarea>
         </div>
     </main>
 </div>
