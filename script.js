@@ -1,3 +1,15 @@
+// --- GLOBAL HELPERS ---
+const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const rndHex = (len) => [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+// Generate distinct variable names (Short & Confusing)
+function getVar() {
+    const chars = ['l', 'I', '1', '0', 'O', 'L'];
+    let s = "_";
+    for(let i=0; i<8; i++) s += chars[rnd(0, chars.length-1)];
+    return s + rndHex(3); 
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const els = {
         input: document.getElementById("input"),
@@ -12,17 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
         instrCount: document.getElementById("instrCount"),
         genTime: document.getElementById("genTime")
     };
-
-    const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-    const rndHex = (len) => [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-    
-    // Generate distinct variable names (Short & Confusing)
-    function getVar() {
-        const chars = ['l', 'I', '1', '0', 'O', 'L'];
-        let s = "_";
-        for(let i=0; i<8; i++) s += chars[rnd(0, chars.length-1)];
-        return s + rndHex(3); 
-    }
 
     // --- HANDLERS ---
 
@@ -237,12 +238,4 @@ if run then run() end
 `;
         return lua;
     }
-}
-
-// Helper for var gen
-function getVar() {
-    const chars = ['l', 'I', '1', '0', 'O', 'L'];
-    let s = "_";
-    for(let i=0; i<8; i++) s += chars[Math.floor(Math.random() * chars.length)];
-    return s + Math.floor(Math.random() * 999).toString(16); 
 }
