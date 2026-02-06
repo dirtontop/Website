@@ -1,270 +1,146 @@
-/* ZEXON PROFESSIONAL OBFUSCATOR ENGINE
-    Core Logic: Polymorphic Virtual Machine with Entangled Control Flow
-*/
-
-// --- GLOBAL UTILITIES ---
-const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const rndHex = (len) => [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
-
-// Generates variable names that are visually confusing (e.g., _l1l0I_A9F)
-function getVar() {
-    const chars = ['l', 'I', '1', '0', 'O', 'L'];
-    let s = "_";
-    for(let i=0; i<8; i++) s += chars[rnd(0, chars.length-1)];
-    return s + rndHex(3); 
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    // UI Elements
-    const els = {
-        input: document.getElementById("input"),
-        output: document.getElementById("output"),
-        btnObfuscate: document.getElementById("obfuscate"),
-        btnCopy: document.getElementById("copy"),
-        btnClear: document.getElementById("clear"),
-        preset: document.getElementById("preset"),       // light, standard, maximum
-        target: document.getElementById("target"),       // lua, roblox
-        debugMode: document.getElementById("debugMode"), // Checkbox
-        stats: document.getElementById("statsBox"),
-        instrCount: document.getElementById("instrCount"),
-        genTime: document.getElementById("genTime")
-    };
-
-    // --- BUTTON HANDLERS ---
-
-    els.btnObfuscate.onclick = () => {
-        const code = els.input.value;
-        if (!code.trim()) return;
-
-        // UI Loading State
-        const originalText = els.btnObfuscate.innerText;
-        els.btnObfuscate.innerText = "ANALYZING CONTROL FLOW...";
-        els.btnObfuscate.disabled = true;
-        els.output.value = "-- Initializing Virtual Machine...\n-- Entangling logical states...";
-
-        // Run generation in a timeout to allow the UI to update
-        setTimeout(() => {
-            const startTime = performance.now();
-            try {
-                // Configuration Object
-                const config = {
-                    preset: els.preset.value,
-                    target: els.target.value,
-                    debug: els.debugMode ? els.debugMode.checked : false
-                };
-
-                // Execute the Obfuscation Engine
-                const engine = new LuaObfuscator(code, config);
-                const result = engine.obfuscate();
-                
-                // Output Result
-                els.output.value = result.code;
-                
-                // Update Stats Panel
-                els.instrCount.innerText = result.instructions;
-                els.genTime.innerText = Math.floor(performance.now() - startTime) + "ms";
-                els.stats.style.display = "flex";
-
-            } catch (e) {
-                console.error(e);
-                els.output.value = "-- FATAL BUILD ERROR --\n" + e.message;
-            } finally {
-                els.btnObfuscate.innerText = originalText;
-                els.btnObfuscate.disabled = false;
-            }
-        }, 100);
-    };
-
-    els.btnCopy.onclick = () => {
-        if (!els.output.value) return;
-        navigator.clipboard.writeText(els.output.value);
-        const original = els.btnCopy.innerText;
-        els.btnCopy.innerText = "COPIED!";
-        setTimeout(() => els.btnCopy.innerText = original, 1000);
-    };
-
-    els.btnClear.onclick = () => {
-        els.input.value = "";
-        els.output.value = "";
-        els.stats.style.display = "none";
-    };
+/* === NAVIGATION & SCROLL === */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
 });
 
-/**
- * THE ZEXON VIRTUAL MACHINE ENGINE
- * Transforms linear Lua code into a non-linear, state-driven VM.
- */
-class LuaObfuscator {
-    constructor(source, config) {
-        this.source = source;
-        this.config = config;
-        
-        // VM Registers (Randomized Variable Names)
-        this.vars = {
-            ip: getVar(),      // Instruction Pointer
-            stack: getVar(),   // Virtual Stack
-            instr: getVar(),   // Instruction Table
-            key: getVar(),     // Rolling Decryption Key
-            vm: getVar(),      // VM Dispatcher Function
-            temp: getVar()     // Temp logic variable
-        };
+/* === NOTIFICATIONS SYSTEM === */
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notification-area');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    let icon = 'fa-circle-info';
+    if(type === 'success') icon = 'fa-check';
+    if(type === 'error') icon = 'fa-xmark';
 
-        this.instructions = [];
-        this.startState = rnd(100000, 999999);
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+    
+    container.appendChild(toast);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+/* === LOGIN MODAL === */
+const loginModal = document.getElementById('login-modal');
+
+function openLogin() {
+    loginModal.classList.add('active');
+}
+
+function closeLogin() {
+    loginModal.classList.remove('active');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    if (event.target === loginModal) {
+        closeLogin();
     }
-
-    obfuscate() {
-        // 1. Convert Source Code to Byte Stream
-        const bytes = this.source.split('').map(c => c.charCodeAt(0));
-        
-        // 2. Initialize Logic Seeds
-        let currentState = this.startState;
-        let rollingKey = rnd(1, 255);
-        const initialKey = rollingKey;
-
-        // 3. Determine Density based on Preset
-        // 'Light': Minimal fake code. 'Maximum': High fake density (Anti-AI).
-        let fakeDensity = 0;
-        if (this.config.preset === 'standard') fakeDensity = 1; 
-        if (this.config.preset === 'maximum') fakeDensity = 2; 
-
-        // 4. Generate Instruction Stream
-        bytes.forEach((byte, idx) => {
-            // A. Inject Fake Instructions (Decoys / Dead Ends)
-            // These look real but perform useless math or modify unused stack slots.
-            for(let i=0; i<fakeDensity; i++) {
-                this.addInstruction({
-                    id: rnd(100000, 999999),
-                    type: 'NO_OP', 
-                    next: rnd(100000, 999999) // Points to nowhere
-                });
-            }
-
-            // B. Create Real Instruction (Entangled Decryption)
-            const nextState = rnd(100000, 999999);
-            
-            // Logic: The byte is encrypted against the 'Rolling Key'.
-            // The Rolling Key changes after every instruction.
-            const cipher = byte ^ rollingKey;
-            
-            this.addInstruction({
-                id: currentState,
-                type: 'DECRYPT',
-                cipher: cipher,
-                next: nextState
-            });
-
-            // C. Mutate Rolling Key for the next step
-            // This creates the dependency chain. You cannot skip instructions.
-            rollingKey = (rollingKey + byte) % 255;
-            currentState = nextState;
-        });
-
-        // 5. Add Exit State
-        this.addInstruction({
-            id: currentState,
-            type: 'EXIT',
-            next: 0
-        });
-
-        // 6. Shuffle Instructions (Flatten Control Flow)
-        // This ensures the code in the file is randomized, not linear.
-        this.instructions.sort(() => Math.random() - 0.5);
-
-        // 7. Generate Final Code
-        return {
-            code: this.generateLua(initialKey),
-            instructions: this.instructions.length
-        };
+    if (event.target === document.getElementById('legal-modal')) {
+        closeLegal();
     }
+}
 
-    addInstruction(instr) {
-        this.instructions.push(instr);
+/* === FAKE DASHBOARD LOGIC === */
+function handleLogin(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const originalText = btn.innerText;
+    
+    // Fake loading state
+    btn.innerText = "Authenticating...";
+    btn.disabled = true;
+
+    setTimeout(() => {
+        closeLogin();
+        document.getElementById('dashboard-overlay').style.display = 'flex';
+        showNotification('Logged in successfully', 'success');
+        btn.innerText = originalText;
+        btn.disabled = false;
+        document.body.style.overflow = 'hidden'; // Stop background scrolling
+    }, 1500);
+}
+
+function logout() {
+    document.getElementById('dashboard-overlay').style.display = 'none';
+    document.body.style.overflow = 'auto';
+    showNotification('Logged out', 'info');
+}
+
+/* === DASHBOARD FUNCTIONS === */
+function copyKey() {
+    const keyText = document.getElementById('user-key').innerText;
+    navigator.clipboard.writeText(keyText).then(() => {
+        showNotification('Script Key copied to clipboard!', 'success');
+    }).catch(err => {
+        showNotification('Failed to copy', 'error');
+    });
+}
+
+function startDownload() {
+    const btn = document.querySelector('.download-section button');
+    btn.disabled = true;
+    btn.innerText = "Downloading...";
+    
+    setTimeout(() => {
+        btn.innerText = "Download Complete";
+        showNotification('Zexon Client downloaded', 'success');
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerText = "Download v1.2";
+        }, 3000);
+    }, 2000);
+}
+
+/* === LEGAL TEXT GENERATOR === */
+const legalModal = document.getElementById('legal-modal');
+const legalTitle = document.getElementById('legal-title');
+const legalContent = document.getElementById('legal-content');
+
+const legalTexts = {
+    tos: `
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing Zexon Development tools, you agree to be bound by these Terms of Service.</p>
+        <h3>2. Usage License</h3>
+        <p>Permission is granted to temporarily download one copy of the materials (information or software) on Zexon's website for personal, non-commercial transitory viewing only.</p>
+        <h3>3. Restrictions</h3>
+        <p>You may not attempt to reverse engineer any software contained on Zexon Development's website.</p>
+    `,
+    privacy: `
+        <h3>1. Information Collection</h3>
+        <p>We collect standard log data and authentication cookies to maintain your session.</p>
+        <h3>2. Data Security</h3>
+        <p>Zexon uses industry-standard encryption to protect your script keys and account data.</p>
+    `,
+    copyright: `
+        <h3>Copyright © 2026 Zexon Development</h3>
+        <p>All rights reserved. The Zexon Client and Lua Obfuscator are intellectual property of Zexon Development.</p>
+    `
+};
+
+function openLegal(type) {
+    legalModal.classList.add('active');
+    if (type === 'tos') {
+        legalTitle.innerText = "Terms of Service";
+        legalContent.innerHTML = legalTexts.tos;
+    } else if (type === 'privacy') {
+        legalTitle.innerText = "Privacy Policy";
+        legalContent.innerHTML = legalTexts.privacy;
+    } else {
+        legalTitle.innerText = "Copyright";
+        legalContent.innerHTML = legalTexts.copyright;
     }
+}
 
-    generateLua(initialKey) {
-        const v = this.vars;
-        const isRoblox = this.config.target === 'roblox';
-        const isDebug = this.config.debug;
-        const level = this.config.preset.toUpperCase();
-
-        let lua = `-- [[ ZEXON PROTECTED | ${level} SECURITY ]]\n`;
-        lua += `-- [[ TARGET: ${isRoblox ? 'ROBLOX (LUAU)' : 'UNIVERSAL LUA'} ]]\n`;
-        
-        // --- HEADERS & POLYFILLS ---
-        if (isRoblox) {
-            // Roblox Optimizations: Localize Globals for speed
-            lua += `local bit32, task, string, table = bit32, task, string, table\n`;
-        } else {
-            // Universal Lua: Pcall require('bit') for LuaJIT/5.1 compat
-            lua += `local bit32=bit32;pcall(function()bit32=bit32 or require('bit')end);bit32=bit32 or{bxor=function(a,b)return a~b end}\n`;
-        }
-
-        // --- VM STATE INITIALIZATION ---
-        lua += `local ${v.ip} = ${this.startState}\n`;
-        lua += `local ${v.key} = ${initialKey}\n`;
-        lua += `local ${v.stack} = {}\n`;
-        lua += `local ${v.instr} = {}\n\n`;
-
-        // --- INSTRUCTION TABLE GENERATION ---
-        this.instructions.forEach(ins => {
-            // Define the instruction function
-            // Arguments: k (Current Key), s (Stack)
-            lua += `${v.instr}[${ins.id}] = function(k, s)\n`;
-            
-            if (isDebug) {
-                lua += `    print("[VM] OP: ${ins.type} | ID: ${ins.id} | Key: "..k)\n`;
-            }
-
-            if (ins.type === 'DECRYPT') {
-                // --- ENTANGLED LOGIC ---
-                // We split the cipher into two parts (p1, p2) to hide the constant.
-                // p1 + p2 = cipher
-                const p1 = rnd(1, 100);
-                const p2 = ins.cipher - p1;
-                
-                lua += `    -- Entangled Opcode\n`;
-                lua += `    local c = ${p1} + ${p2}\n`;          // Reassemble Cipher
-                lua += `    local b = bit32.bxor(c, k)\n`;      // Decrypt using Rolling Key
-                lua += `    table.insert(s, string.char(b))\n`; // Push to Stack
-                lua += `    return ${ins.next}, (k + b) % 255\n`; // Return NextState + NewKey
-            
-            } else if (ins.type === 'EXIT') {
-                lua += `    return nil, k\n`; // Signal VM to stop
-            
-            } else {
-                // --- NO_OP (DECOY) ---
-                // Looks like real math to confuse AI, but affects local vars only.
-                const fakeNext = rnd(100000, 999999);
-                lua += `    local _ = math.abs(math.sin(k) * 100)\n`;
-                lua += `    return ${fakeNext}, k\n`;
-            }
-            
-            lua += `end\n`;
-        });
-
-        // --- VM DISPATCHER LOOP ---
-        lua += `
--- [[ VM DISPATCHER ]]
-local function ${v.vm}()
-    local c = 0
-    while ${v.instr}[${v.ip}] do
-        -- Execute Instruction & Update State
-        ${v.ip}, ${v.key} = ${v.instr}[${v.ip}](${v.key}, ${v.stack})
-        
-        c = c + 1
-        -- Anti-Crash: Wait every 500 ops (Roblox Only)
-        ${isRoblox ? 'if c % 500 == 0 then task.wait() end' : ''}
-    end
-end
-
--- [[ EXECUTION SINK ]]
-if not pcall(${v.vm}) then return end 
-
-local payload = table.concat(${v.stack})
-local run = (loadstring or load)(payload)
-if run then run() end
-`;
-        return lua;
-    }
+function closeLegal() {
+    legalModal.classList.remove('active');
 }
