@@ -3,77 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zexon Professional Obfuscator</title>
+    <title>Zexon Development | Elite Software Solutions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app-container">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="logo-icon">Z</div>
-            <h1>ZEXON <span class="badge">PRO</span></h1>
-        </div>
-        
-        <div class="panel">
-            <h3>Protection Settings</h3>
-            
-            <div class="control-group">
-                <label>Security Level</label>
-                <select id="preset">
-                    <option value="light">Light (Performance)</option>
-                    <option value="standard" selected>Standard (Balanced)</option>
-                    <option value="maximum">Maximum (Heavy VM)</option>
-                </select>
-            </div>
+    <div id="notification-area"></div>
 
-            <div class="control-group">
-                <label>Target Engine</label>
-                <select id="target">
-                    <option value="lua">Universal Lua (5.1+)</option>
-                    <option value="roblox">Roblox (Luau)</option>
-                </select>
-            </div>
+    <nav class="navbar">
+        <div class="logo">ZEXON <span class="accent">DEV</span></div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#products">Products</a>
+            <a href="#status">Status</a>
+            <a href="#news">News</a>
+            <a href="#about">Team</a>
+        </div>
+        <div class="nav-actions">
+            <button class="btn-secondary" onclick="openLogin()">Dashboard</button>
+        </div>
+        <div class="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
 
-            <div class="control-group checkbox-group">
-                <input type="checkbox" id="debugMode">
-                <label for="debugMode">Enable Debug Tracing</label>
-                <small class="hint">Outputs execution steps to console. Useful for testing.</small>
+    <main>
+        <section id="home" class="hero-section">
+            <div class="hero-content">
+                <div class="badge">V2.0 NOW LIVE</div>
+                <h1>Redefining <span class="glitch-text">Execution.</span></h1>
+                <p class="tagline">Advanced Lua tools, obfuscation, and client-side modifications tailored for performance.</p>
+                <div class="cta-group">
+                    <button class="btn-primary" onclick="openLogin()"> <i class="fa-solid fa-gauge"></i> Open Dashboard</button>
+                    <a href="#products" class="btn-outline">View Products</a>
+                    <a href="#" class="btn-discord"><i class="fa-brands fa-discord"></i> Join Discord</a>
+                </div>
             </div>
+            <div class="hero-visual">
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                    </div>
+                    <pre><code><span class="kw">local</span> Zexon = <span class="func">require</span>(<span class="str">"ZexonLib"</span>)
 
-            <div class="stats-box" id="statsBox" style="display:none;">
-                <div class="stat-row"><span>Instructions:</span> <span id="instrCount">0</span></div>
-                <div class="stat-row"><span>Generation:</span> <span id="genTime">0ms</span></div>
+Zexon.<span class="func">init</span>({
+    mode = <span class="str">"secure"</span>,
+    obfuscation = <span class="bool">true</span>
+})
+
+<span class="comment">-- System Initialized</span>
+<span class="kw">print</span>(<span class="str">"Welcome to Zexon."</span>)</code></pre>
+                </div>
             </div>
+        </section>
+
+        <div class="status-ticker">
+            <div class="ticker-item"><span class="status-dot online"></span> Obfuscator: Online</div>
+            <div class="ticker-item"><span class="status-dot online"></span> Auth: Online</div>
+            <div class="ticker-item"><span class="status-dot warning"></span> Client: In Dev</div>
+            <div class="ticker-item"><span class="status-dot online"></span> API: Operational</div>
         </div>
 
-        <div class="actions">
-            <button id="obfuscate" class="btn-primary">PROTECT SOURCE</button>
-            <button id="copy" class="btn-secondary">COPY OUTPUT</button>
-            <button id="clear" class="btn-danger">RESET</button>
-        </div>
-    </aside>
+        <section id="products" class="section">
+            <h2 class="section-title">Our Software</h2>
+            <div class="cards-grid">
+                
+                <div class="card product-card">
+                    <div class="card-header">
+                        <h3>Zexon Lua Obfuscator</h3>
+                        <span class="status-badge online">Online</span>
+                    </div>
+                    <p>Enterprise-grade Lua protection. Prevent tampering and theft of your intellectual property.</p>
+                    <div class="price">FREE / PREM</div>
+                    <button class="btn-full">Open Website</button>
+                </div>
 
-    <main class="editor-area">
-        <div class="editor-container">
-            <div class="editor-header">
-                <span>Source Code</span>
-                <span class="badge-lang">LUA</span>
+                <div class="card product-card highlight">
+                    <div class="card-header">
+                        <h3>Zexon Script Key</h3>
+                        <span class="status-badge online">Active</span>
+                    </div>
+                    <p>Unlock the full potential of our internal suite. 24/7 Support included.</p>
+                    <div class="price-list">
+                        <span>$5.00 / Month</span>
+                        <span>$20.00 / Lifetime</span>
+                    </div>
+                    <button class="btn-primary btn-full">Purchase Key</button>
+                </div>
+
+                <div class="card product-card disabled">
+                    <div class="card-header">
+                        <h3>Zexon Client (Mod)</h3>
+                        <span class="status-badge dev">In Development</span>
+                    </div>
+                    <p>Next-gen Minecraft utility mod. Optimization and QoL features built-in.</p>
+                    <div class="price">Coming Soon</div>
+                    <button class="btn-outline btn-full" disabled>Download (Locked)</button>
+                </div>
+
             </div>
-            <textarea id="input" placeholder="print('Hello World') -- Paste script here"></textarea>
-        </div>
-        
-        <div class="editor-container">
-            <div class="editor-header">
-                <span>Obfuscated Output</span>
-                <span class="badge-lang">LUA VM</span>
+        </section>
+
+        <section id="status" class="section">
+            <h2 class="section-title">System Status</h2>
+            <div class="status-panel">
+                <div class="status-row">
+                    <span>Zexon Obfuscator API</span>
+                    <span class="status-indicator online">Operational</span>
+                </div>
+                <div class="status-row">
+                    <span>Authentication Server</span>
+                    <span class="status-indicator online">Operational</span>
+                </div>
+                <div class="status-row">
+                    <span>Zexon Client Updates</span>
+                    <span class="status-indicator warning">Maintenance</span>
+                </div>
+                <div class="status-row">
+                    <span>Website Backend</span>
+                    <span class="status-indicator online">Operational</span>
+                </div>
             </div>
-            <textarea id="output" readonly placeholder="-- Output will appear here..."></textarea>
-        </div>
+        </section>
+
+        <section id="news" class="section">
+            <h2 class="section-title">Roadmap & Updates</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="date">Feb 2026</div>
+                    <div class="content">
+                        <h4>Future Plans</h4>
+                        <p>Expanding the Zexon Client beta access to lifetime key holders.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">Jan 2026</div>
+                    <div class="content">
+                        <h4>Website Overhaul</h4>
+                        <p>Released the new V2 dark-themed UI and user dashboard.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">Dec 2025</div>
+                    <div class="content">
+                        <h4>Obfuscator Update</h4>
+                        <p>Added LuaU support and enhanced string encryption.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <h2 class="section-title">The Team</h2>
+            <div class="team-grid">
+                <div class="card team-card">
+                    <div class="avatar">D</div>
+                    <h4>dirt</h4>
+                    <span class="role">Owner</span>
+                </div>
+                <div class="card team-card">
+                    <div class="avatar">G</div>
+                    <h4>guy</h4>
+                    <span class="role">Co-Owner / Lead Dev</span>
+                </div>
+                <div class="card team-card">
+                    <div class="avatar">Z</div>
+                    <h4>zelek</h4>
+                    <span class="role">Helper / Staff</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="discord" class="section">
+            <div class="discord-banner">
+                <div class="discord-content">
+                    <h2>Join the Community</h2>
+                    <p>Get support, report bugs, and chat with 5,000+ members.</p>
+                    <button class="btn-discord-large"><i class="fa-brands fa-discord"></i> Join Server</button>
+                </div>
+            </div>
+        </section>
+
     </main>
-</div>
 
-<script src="script.js"></script>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Zexon Development</h3>
+                <p>&copy; 2026 Zexon Dev. All rights reserved.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#" onclick="openLegal('tos')">Terms of Service</a>
+                <a href="#" onclick="openLegal('privacy')">Privacy Policy</a>
+                <a href="#" onclick="openLegal('copyright')">Copyright</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <span class="close-btn" onclick="closeLogin()">&times;</span>
+            <h2>User Login</h2>
+            <p>Access your Zexon dashboard.</p>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary btn-full">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-overlay" class="dashboard-container">
+        <div class="dashboard-sidebar">
+            <div class="dash-logo">ZEXON</div>
+            <ul>
+                <li class="active"><i class="fa-solid fa-house"></i> Overview</li>
+                <li><i class="fa-solid fa-key"></i> Licenses</li>
+                <li><i class="fa-solid fa-download"></i> Downloads</li>
+                <li><i class="fa-solid fa-gear"></i> Settings</li>
+                <li class="logout" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+            </ul>
+        </div>
+        <div class="dashboard-main">
+            <header>
+                <h2>Welcome back, <span id="user-name">User</span></h2>
+                <div class="user-status">
+                    Status: <span class="status-badge online">Active</span>
+                </div>
+            </header>
+            
+            <div class="cards-grid">
+                <div class="card dash-card">
+                    <h3>Your Script Key</h3>
+                    <div class="key-display">
+                        <code id="user-key">ZEXON-8392-XKLA-9921</code>
+                        <button class="icon-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <small>Expires: Lifetime</small>
+                </div>
+
+                <div class="card dash-card">
+                    <h3>Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="btn-outline btn-sm">Open Obfuscator</button>
+                        <button class="btn-outline btn-sm">Reset HWID</button>
+                    </div>
+                </div>
+
+                <div class="card dash-card">
+                    <h3>Latest Announcement</h3>
+                    <p class="small-text">Maintenance scheduled for Feb 12th. The API may be down for 30 minutes.</p>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <h3>Downloads</h3>
+                <div class="download-row">
+                    <span>Zexon Client (Beta)</span>
+                    <button class="btn-primary btn-sm" onclick="startDownload()">Download v1.2</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="legal-modal" class="modal-overlay">
+        <div class="modal-box glass-panel large">
+            <span class="close-btn" onclick="closeLegal()">&times;</span>
+            <h2 id="legal-title">Terms</h2>
+            <div id="legal-content" class="legal-text">
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
